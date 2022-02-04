@@ -1,4 +1,4 @@
-# Ansible Role: Matic Mainnet:
+# Ansible Role: Matic Mainnet full node 
 Install Matic Mainnet Full Node on Debian/Ubuntu servers.
 
 This role installs and configures Heimdall and Bor for  Matic Mainnet Full Node. You will likely need to do extra setup work before this role,  like changing variables, describing the location and options to use for your particular node.

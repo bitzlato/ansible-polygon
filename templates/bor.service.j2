@@ -5,7 +5,7 @@ StartLimitBurst=5
 After=network.target
 
 [Service]
-ExecStart=-/home/polygon/go/bin/bor --datadir {{ bor_datadir }}/data \
+ExecStart=/home/polygon/go/bin/bor --datadir {{ bor_datadir }}/data \
   --port 30303 \
   --http --http.addr '{{ bor_http_addr }}' \
   --http.vhosts '*' \

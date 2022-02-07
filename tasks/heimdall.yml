@@ -40,12 +40,6 @@
     group: "{{ polygon_user_name }}"
     mode: 0755
 
-- name: "Changing the address of the RPC heimdall server to listen on"
-  lineinfile:
-    path: "{{ heimdall_datadir }}//config/config.toml"
-    search_string: 'laddr = "tcp://127.0.0.1:26657"'
-    line: 'laddr = "tcp://{{ heimdall_rpc_address }}:{{ heimdall_rpc_port }}"'
-
 - name: "Changing a custom human readable name for this node"
   lineinfile:
     path: "{{ heimdall_datadir }}//config/config.toml"

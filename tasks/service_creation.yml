@@ -1,0 +1,54 @@
+---
+- name: "Creating heimdalld systemd service"
+  template:
+    src: heimdalld.service.j2
+    dest: "{{ polygon_service_dir }}/heimdalld.service"
+    mode: 0644
+  become: true
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Creating heimdalld-rest-server systemd service"
+  template:
+    src: heimdalld-rest-server.service.j2
+    dest: "{{ polygon_service_dir }}/heimdalld-rest-server.service"
+    mode: 0644
+  become: true
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Creating bor systemd service"
+  template:
+    src: bor.service.j2
+    dest: "{{ polygon_service_dir }}/bor.service"
+    mode: 0644
+  become: true
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Find uid of {{ polygon_user_name }}"
+  command: "id -u {{ polygon_user_name }}"
+  register: the_user_uid
+  become: true
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Determine XDG_RUNTIME_DIR"
+  set_fact:
+    xdg_runtime_dir: "/run/user/{{ the_user_uid.stdout }}"
+  changed_when: false
+  become: true
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Updating bashrc for {{ polygon_user_name }}"
+  lineinfile:
+    path: "/home/{{ polygon_user_name }}/.bashrc"
+    line: "export XDG_RUNTIME_DIR=/run/user/{{ the_user_uid.stdout }}"
+
+- name: "Start and enable services"
+  become: true
+  become_user: "{{ polygon_user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "{{ xdg_runtime_dir }}"
+  systemd:
+    scope: user
+    daemon_reload: yes
+    name: heimdalld.service
+    enabled: "{{ heimdall_service_enabled }}"
+    state: "{{ heimdall_service_state }}"

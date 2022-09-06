@@ -1,0 +1,40 @@
+[Unit]
+Description=bor
+StartLimitIntervalSec=500
+StartLimitBurst=5
+After=network.target
+
+[Service]
+ExecStart=/home/{{ polygon_user_name }}/go/bin/bor --datadir {{ bor_datadir }}/data \
+  --http --http.addr '{{ bor_http_addr }}' \
+  --http.vhosts '*' \
+  --http.corsdomain '*' \
+  --http.port '{{ bor_rpc_port }}' \
+  --port '{{ bor_port }}' \
+  --ws --ws.addr '{{ bor_ws_addr }}' \
+  --ws.port '{{ bor_ws_port }}' \
+  --ipcpath "{{ bor_datadir }}/data/bor.ipc" \
+  --http.api 'eth,net,web3,txpool,bor' \
+  --syncmode 'full' \
+  --networkid '137' \
+  --miner.gasprice '30000000000' \
+  --miner.gaslimit '20000000' \
+  --miner.gastarget '20000000' \
+  --txpool.nolocals \
+  --txpool.accountslots 16 \
+  --txpool.globalslots 131072 \
+  --txpool.accountqueue 64 \
+  --txpool.globalqueue 131072 \
+  --txpool.lifetime '1h30m0s' \
+  --maxpeers 200 \
+  --metrics \
+  --pprof --pprof.port 7071 --pprof.addr '0.0.0.0'
+
+Restart=on-failure
+
+# Specifies which signal to use when killing a service. Defaults to SIGTERM.
+# SIGHUP gives parity time to exit cleanly before SIGKILL (default 90s)
+KillSignal=SIGHUP
+
+[Install]
+WantedBy=default.target

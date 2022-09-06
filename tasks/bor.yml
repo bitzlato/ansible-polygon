@@ -1,0 +1,41 @@
+---
+# tasks file for bor
+
+- name: "Cloning the Bor branch {{ bor_branch }}"
+  git:
+    repo: "https://github.com/maticnetwork/bor.git"
+    dest: "{{ polygon_home }}/bor"
+    force: yes
+    version: "{{ bor_branch }}"
+  become: yes
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Bor building"
+  make:
+    chdir: "{{ polygon_home }}/bor"
+    target: bor
+  environment:
+    PATH: "{{ golang_path }}"
+  become: yes
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Creating symlink for bor"
+  file:
+    src: "{{ polygon_home }}/go/bin/bor"
+    dest: "{{ polygon_home }}/bin/bor"
+    state: link
+  become: true
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Downloading genesis file for bor"
+  get_url:
+    url: "{{ bor_genesis_url }}"
+    dest: "{{ bor_datadir }}"
+    owner: "{{ polygon_user_name }}"
+    group: "{{ polygon_user_name }}"
+    mode: 0755
+
+- name: "Initializing bor data directory"
+  command: /home/{{ polygon_user_name }}/go/bin/bor --datadir "{{ bor_datadir }}/data" init "{{ bor_datadir }}/genesis.json"
+  become: true
+  become_user: "{{ polygon_user_name }}"

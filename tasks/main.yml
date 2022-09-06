@@ -1,0 +1,5 @@
+---
+- import_tasks: preparation.yml
+- import_tasks: bor.yml
+- import_tasks: heimdall.yml
+- import_tasks: service_creation.yml

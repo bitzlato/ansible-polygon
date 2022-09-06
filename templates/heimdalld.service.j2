@@ -1,0 +1,17 @@
+[Unit]
+Description=heimdalld
+StartLimitIntervalSec=500
+StartLimitBurst=5
+After=network.target
+
+[Service]
+ExecStart={{ polygon_home }}/go/bin/heimdalld start --home {{ heimdall_datadir }}
+Restart=on-failure
+RestartSec=5s
+
+# Specifies which signal to use when killing a service. Defaults to SIGTERM.
+# SIGHUP gives parity time to exit cleanly before SIGKILL (default 90s)
+KillSignal=SIGHUP
+
+[Install]
+WantedBy=default.target

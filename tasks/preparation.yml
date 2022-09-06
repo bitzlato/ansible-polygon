@@ -1,0 +1,25 @@
+---
+- name: "Create {{ polygon_user_name }} user"
+  user:
+    name: "{{ polygon_user_name }}"
+    home: "/home/{{ polygon_user_name }}"
+    shell: /bin/bash
+    system: yes
+
+- name: "Creates directory"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ polygon_user_name }}"
+    group: "{{ polygon_user_name }}"
+    mode: 0755
+    recurse: yes
+  loop:
+    - "{{ heimdall_datadir }}"
+    - "{{ bor_datadir }}"
+    - "{{ bor_datadir }}/data"
+    - "{{ polygon_service_dir }}"
+    - "{{ polygon_home }}/bin"
+
+- name: "Enable linger for {{ polygon_user_name }}"
+  command: "loginctl enable-linger {{polygon_user_name}}"

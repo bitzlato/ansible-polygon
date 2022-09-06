@@ -1,0 +1,20 @@
+---
+polygon_user_name: polygon
+golang_path: ""
+polygon_home: "/home/{{ polygon_user_name }}"
+heimdall_datadir: "{{ polygon_home }}/heimdall_data"
+bor_datadir: "{{ polygon_home }}/bor_data"
+bor_branch: "v0.2.14"
+heimdall_branch: "master"
+heimdall_genesis_url: "https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/without-sentry/heimdall/config/genesis.json"
+bor_genesis_url: "https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/without-sentry/bor/genesis.json"
+heimdall_rpc_address: "127.0.0.1"
+heimdall_rpc_port: 26657
+bor_port: 30303
+bor_rpc_port: 8545
+bor_ws_port: 8546
+polygon_service_dir: "/home/{{ polygon_user_name }}/.config/systemd/user/"
+bor_http_addr: "127.0.0.1"
+bor_ws_addr: "127.0.0.1"
+heimdall_service_enabled: 'yes' # no
+heimdall_service_state: 'started' # stopped

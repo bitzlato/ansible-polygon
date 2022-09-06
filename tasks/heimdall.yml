@@ -1,0 +1,66 @@
+---
+# tasks file for heimdall
+
+- name: "Cloning the Heimdall branch {{ heimdall_branch }}"
+  git:
+    repo: "https://github.com/maticnetwork/heimdall.git"
+    dest: "{{ polygon_home }}/heimdall"
+    force: yes
+    version: "{{ heimdall_branch }}"
+  become: yes
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Heimdall building"
+  make:
+    chdir: "{{ polygon_home }}/heimdall"
+    target: install
+  environment:
+    PATH: "{{ golang_path }}"
+  become: yes
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Creating symlink for heimdalld"
+  file:
+    src: "{{ polygon_home }}/go/bin/heimdalld"
+    dest: "{{ polygon_home }}/bin/heimdalld"
+    state: link
+  become: true  
+  become_user: "{{ polygon_user_name }}"
+
+- name: "Initializing heimdall data directory"
+  command: /home/{{ polygon_user_name }}/go/bin/heimdalld init --home "{{ heimdall_datadir }}"
+  become: true
+  become_user: "{{ polygon_user_name }}" 
+
+- name: "Downloading and replacing genesis file for heimdall"
+  get_url:
+    url: "{{ heimdall_genesis_url }}"
+    dest: "{{ heimdall_datadir }}/config"
+    owner: "{{ polygon_user_name }}"
+    group: "{{ polygon_user_name }}"
+    mode: 0755
+
+- name: "Changing a custom human readable name for this node"
+  lineinfile:
+    path: "{{ heimdall_datadir }}//config/config.toml"
+    regexp: '^moniker = *'
+    line: 'moniker = "polygon_mainnet"'
+
+- name: "Changing s list of origins a cross-domain request can be executed from"
+  lineinfile:
+    path: "{{ heimdall_datadir }}//config/config.toml"
+    search_string: 'cors_allowed_origins = []'
+    line: 'cors_allowed_origins = ["*"]'
+
+- name: "Adding a list of seed nodes to connect to"
+  lineinfile:
+    path: "{{ heimdall_datadir }}//config/config.toml"
+    search_string: 'seeds = ""'
+    line: 'seeds = "f4f605d60b8ffaaf15240564e58a81103510631c@159.203.9.164:26656,4fb1bc820088764a564d4f66bba1963d47d82329@44.232.55.71:26656"'
+
+- name: "Changing permissions to priv_validator_key.json"
+  ansible.builtin.file:
+    path: "{{ heimdall_datadir }}/config/priv_validator_key.json"
+    owner: "{{ polygon_user_name }}"
+    group: "{{ polygon_user_name }}"
+    mode: 0600

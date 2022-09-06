@@ -5,7 +5,7 @@ StartLimitBurst=5
 After=network.target
 
 [Service]
-ExecStart={{ polygon_home }}/go/bin/heimdalld start --home {{ heimdall_datadir }}
+ExecStart=/home/{{ polygon_user_name }}/go/bin/heimdalld start --home {{ heimdall_datadir }}
 Restart=on-failure
 RestartSec=5s
 

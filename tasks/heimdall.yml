@@ -46,18 +46,6 @@
     regexp: '^moniker = *'
     line: 'moniker = "polygon_mainnet"'
 
-- name: "Changing s list of origins a cross-domain request can be executed from"
-  lineinfile:
-    path: "{{ heimdall_datadir }}//config/config.toml"
-    search_string: 'cors_allowed_origins = []'
-    line: 'cors_allowed_origins = ["*"]'
-
-- name: "Adding a list of seed nodes to connect to"
-  lineinfile:
-    path: "{{ heimdall_datadir }}//config/config.toml"
-    search_string: 'seeds = ""'
-    line: 'seeds = "f4f605d60b8ffaaf15240564e58a81103510631c@159.203.9.164:26656,4fb1bc820088764a564d4f66bba1963d47d82329@44.232.55.71:26656"'
-
 - name: "Changing permissions to priv_validator_key.json"
   ansible.builtin.file:
     path: "{{ heimdall_datadir }}/config/priv_validator_key.json"
